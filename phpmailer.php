@@ -2,47 +2,44 @@
 require 'vendor/autoload.php';
 
 
- if ($_SERVER['REQUEST_METHOD']=='POST'){
-        $email = $_POST["email"];
-        $subject = $_POST['subject'];
-        $mailmessage = $_POST['mailmessage'];
-        sendemail($email, $subject, $mailmessage);
-    } 
-?>
-<link rel="stylesheet" href =".\css\bootstrap.min.css">
-<form method="POST" action="">
-<div class="container">
-    <div class="col-lg-5">
-        <div class="form-group">
-            <label>Email</label>
-            <textarea type="text" class="form-control" rows="4" cols="50" name="email"><?php
+        function sendemail($email, $subject, $mailmessage) {
 
-
-$UM=new UserManager();
-$users=$UM->getAllUsers();
-if(isset($users)){
-    foreach ($users as $user) {
-        if($user!=null){
- 
-echo "$user->email, ";      
+            $mail = new PHPMailer;                              // Passing `true` enables exceptions
+            try {
+                //server settings
+                $mail->SMTPDebug = 2;                                
+                $mail->isSMTP();                                      
+                $mail->Host = 'smtp.gmail.com';    
+                $mail->SMTPAuth = true;                            
+                 
+                $mail->Username = 'test@mail.com';
+                $mail->Password = 'password';
+                $mail->SMTPSecure = 'tls';                             
+                $mail->Port = 587;   
+                $addr = explode(', ', $email);
+            
+        
+                for ($i = 0; $i< count($addr); $i++) {    
+                    
+                  // $link=rootlink."public/unsubscribe.php?id={$id}&subscribe={$subscribe} ";
+                    $mail->isHTML(true); 
+                    $mail->Subject = $subject;
+                    $mail->Body = $mailmessage ;
+                    $mail->AltBody = "This is the plain text version of the email content";
+                    $mail->setFrom('kerenteo@gmail.com', 'Admin');
+                    $mail->addAddress($addr[0]);   
+                }
+        
+                $mail->send();
+                echo 'Message has been sent successfully to'.$email;
+            } catch (Exception $e) {
+                echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+            }
         }
-    }
-}    
-?></textarea>
-        </div>
-        <div class="form-group">
-            <label>Subject</label>
-            <input type="text" class="form-control" name="subject">
-        </div>
-        <div class="form-group">
-            <label>Message: </label>
-            <textarea class="form-control" rows="4" cols="50" type="text" name="mailmessage"></textarea>
-        </div>
-        <div>
-            <input type="submit">
-        </div>  
-    </div>  
-   </div>
-</div>
-                   
-</form>
+     
+    
+        $email = "test1@mail.com, test2@mail.com";
+        $subject = "hello";
+        $mailmessage = "testing";
+        sendemail($email, $subject, $mailmessage);
+    
