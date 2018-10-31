@@ -27,7 +27,7 @@ require 'vendor/autoload.php';
                     $mail->Body = $mailmessage ;
                     $mail->AltBody = "This is the plain text version of the email content";
                     $mail->setFrom('kerenteo@gmail.com', 'Admin');
-                    $mail->addAddress($addr[0]);   
+                    $mail->addAddress($addr[$i]);   
                 }
         
                 $mail->send();
